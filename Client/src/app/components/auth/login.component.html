@@ -1,0 +1,25 @@
+<div class="d-flex justify-content-center align-items-center h-75">
+    <div style="width: 400px;">
+        <h1>Login</h1>
+        <form [formGroup]="loginForm" novalidate (ngSubmit)="submit()">
+            <div class="form-group">
+                <label>User name</label>
+                <input type="text" class="form-control" name="userName" formControlName="userName">      
+                
+                <div class="control-validation-error"
+                    *ngIf="loginForm.controls['userName'].invalid && loginForm.controls['userName'].touched">
+                    The user name is required
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-control" name="userPassword" formControlName="userPassword">
+                <div class="control-validation-error"
+                    *ngIf="loginForm.controls['userPassword'].invalid && loginForm.controls['userPassword'].touched">
+                    The password is required
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">Sing in</button>
+        </form>        
+    </div>
+</div>
