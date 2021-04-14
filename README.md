@@ -1,2 +1,2 @@
 # NgAppN1
-Angular + asp.net core webapi template
+Angular + asp.net core webapi template.
