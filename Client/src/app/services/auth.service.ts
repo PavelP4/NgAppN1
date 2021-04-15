@@ -1,44 +1,43 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { AppSettingsService } from "./appsettings.service";
 import { User } from '../models/auth/user';
 import { Store } from "@ngrx/store";
-import { AuthState, authenticate as authenticateAction } from "../store/auth";
-import { map } from "rxjs/operators";
+import { AuthState, login as loginAction } from "../store/auth";
+import { LoginResult } from "../models/auth/loginResult";
 
 @Injectable()
 export class AuthService {
 
     private apiBaseUrl: string = "";
     
-    private authState$: Observable<AuthState>;
 
-    constructor(private http: HttpClient, private appsettings: AppSettingsService, private store: Store<{ auth: AuthState }>){
-        this.authState$ = store.select('auth');
+    constructor(
+        private http: HttpClient, 
+        private appsettings: AppSettingsService, 
+        private store: Store<{ auth: AuthState }>){       
     }
 
-    authenticate(name: string, password: string): Observable<string>{
+    login(name: string, password: string): Observable<LoginResult>{
         let params = new HttpParams();
         params.set("name", name);
         params.set("password", password);
+       
+        let res = new LoginResult();
+        res.user = new User();
+        res.user.login = name;
+        res.token = "token123";
+        return of(res);
 
-        return this.http.get<string>(this.getUrl("auth"), {params})
-            .pipe(map(token => {
-                if (token) {
-                    this.store.dispatch(authenticateAction());     
-                }
-
-                return token;
-            }));
+        return this.http.get<LoginResult>(this.getUrl("authenticate"), {params});
     }
 
     register(user: User): Observable<number> {
-
         return this.http.post<number>(this.getUrl("register"), user);
     }
 
     private getUrl(path: string): string {
-        return `${this.apiBaseUrl}/${path}`;
+        return `${this.apiBaseUrl}/auth/${path}`;
     }
 }

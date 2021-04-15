@@ -53,7 +53,7 @@ export class RegisterComponent {
         user.lastName = this.registerForm.controls['lastName'].value;
         user.login = this.registerForm.controls['login'].value;
         user.password = this.registerForm.controls['password'].value;
-        user.email = this.registerForm.controls['email'].value;        
+        user.email = this.registerForm.controls['email'].value;      
 
         this.authService.register(user).subscribe(userId => {
             if (userId && userId > 0) {
