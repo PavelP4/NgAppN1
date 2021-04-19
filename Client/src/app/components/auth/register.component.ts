@@ -1,14 +1,17 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { User } from "src/app/models/auth/user";
 import { AuthService } from "../../services";
+import { Subscription } from "rxjs";
 
 @Component({
     selector: "register-form",
     templateUrl: "./register.component.html"
 })
-export class RegisterComponent {    
+export class RegisterComponent implements OnDestroy {    
+    private scr: Subscription = new Subscription();
+
     registerForm: FormGroup;
     
     constructor(private authService: AuthService, private router: Router){
@@ -37,6 +40,10 @@ export class RegisterComponent {
         });
     }
 
+    ngOnDestroy(): void {
+        this.scr.unsubscribe();
+    }
+
     checkPasswords(control: FormControl): {[s:string]:boolean} {
         const fg = control.parent as FormGroup;
         if (!fg) return null;
@@ -55,7 +62,7 @@ export class RegisterComponent {
         user.password = this.registerForm.controls['password'].value;
         user.email = this.registerForm.controls['email'].value;      
 
-        this.authService.register(user).subscribe(userId => {
+        let subscription = this.authService.register(user).subscribe(userId => {
             if (userId && userId > 0) {
                 this.goToLogin();
             } else {
@@ -65,6 +72,7 @@ export class RegisterComponent {
         error => {
             this.showAlert(`The user wasn't created (error: ${error.message})`);
         });
+        this.scr.add(subscription);
     }
 
     goToLogin(){

@@ -1,2 +1,3 @@
-export {AuthService} from './auth.service';
-export {AppSettingsService} from './appsettings.service';
+export * from './auth.service';
+export * from './appsettings.service';
+export * from './routerExtService.service';

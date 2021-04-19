@@ -6,3 +6,5 @@
 </div>
 
 <app-footer></app-footer>
+
+<app-spinner [style.visibility]="(showSpinner$ | async) ? 'visible' : 'hidden'"></app-spinner>

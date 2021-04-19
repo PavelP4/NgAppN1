@@ -1,8 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
-import { Observable } from "rxjs";
+import { Observable, Subscription } from "rxjs";
+import { RouterExtService } from "../../services";
 import { AuthState, login as loginAction } from "../../store/auth";
 
 
@@ -11,7 +12,9 @@ import { AuthState, login as loginAction } from "../../store/auth";
     templateUrl: "./login.component.html",
     styleUrls: ["./login.component.scss"]
 })
-export class LoginComponent implements OnInit {   
+export class LoginComponent implements OnInit, OnDestroy {   
+    private scr: Subscription = new Subscription();
+    
     loginForm: FormGroup= new FormGroup({
         "userName": new FormControl("", [
             Validators.required
@@ -25,19 +28,25 @@ export class LoginComponent implements OnInit {
 
     constructor(       
         private router: Router,
+        private routerExtService: RouterExtService,
         private store: Store<{ auth: AuthState }>){
 
         this.authStore$ = this.store.select("auth");
     }
+    ngOnDestroy(): void {
+        this.scr.unsubscribe();
+    }
 
     ngOnInit(): void {
-        this.authStore$.subscribe(state => {
-            if (state.isAuthenticated) {
-                this.goToHome();
-            } else if (state.errorMessage) {                
-                this.showAlert(`The user wasn't authenticated (error: '${state.errorMessage}')`);                           
-            }
-        });
+        this.scr.add(
+            this.authStore$.subscribe(state => {
+                if (state.isAuthenticated) {
+                    this.goToPrevious();
+                } else if (state.errorMessage) {                
+                    this.showAlert(`The user wasn't authenticated (error: '${state.errorMessage}')`);                           
+                }
+            })
+        );
     }
 
     submit() {
@@ -47,8 +56,13 @@ export class LoginComponent implements OnInit {
         this.store.dispatch(loginAction({userName, userPassword}));        
     }
 
-    goToHome() {
-        this.router.navigate(['']);
+    goToPrevious() {
+        const prevUrl = this.routerExtService.getPreviousUrl();
+        if (prevUrl) {
+            this.router.navigateByUrl(prevUrl);
+        } else {
+            this.router.navigate(['']);
+        }
     }
 
     showAlert(message: string){

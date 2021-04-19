@@ -1,2 +1,3 @@
-export {LoginComponent} from './login.component';
-export {RegisterComponent} from './register.component';
+export * from './login.component';
+export * from './register.component';
+export * from './auth.module';

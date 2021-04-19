@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from './auth/auth.effects';
+import { SettignsEffects } from "./settings";
 
 @NgModule({
     imports: [EffectsModule]
@@ -8,6 +9,9 @@ import { AuthEffects } from './auth/auth.effects';
 export class AppEffectsModule {   
 
     static forRoot() {
-        return EffectsModule.forRoot([AuthEffects]);
+        return EffectsModule.forRoot([
+            AuthEffects,
+            SettignsEffects
+        ]);
     }
 }

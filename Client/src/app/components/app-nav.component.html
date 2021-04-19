@@ -10,6 +10,9 @@
             <li class="nav-item">
                 <a class="nav-link" routerLink="/about">About</a>
             </li>
+            <li class="nav-item" *ngIf="(isAuthenticated$ | async)">
+                <a class="nav-link" routerLink="/warehouse">Warehouse</a>
+            </li>
         </ul>        
     </div>
     <ul class="navbar-nav justify-content-end">
