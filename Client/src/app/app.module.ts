@@ -6,8 +6,12 @@ import * as cmp from './components';
 import * as svc from './services';
 import * as grd from './router/guards';
 import { AuthModule } from './components/auth';
-import { AppStoreModule, AppEffectsModule } from './store';
+import { AppStoreModule } from './store/app-store.module';
+import { AppEffectsModule } from './store/app-effects.module';
 import { WarehouseModule } from './components/warehouse'
+import { AppStoreState } from './store';
+import { select, Store } from '@ngrx/store';
+import { getRouterState } from './store/router';
 
 const appModuleComponents = [ 
     cmp.AppComponent, 
@@ -31,6 +35,7 @@ const appModuleModules = [
     AuthModule, 
     AppStoreModule.forRoot(), 
     AppEffectsModule.forRoot(),
+    AppStoreModule.forRouterRoot(),
     WarehouseModule
 ];
 
@@ -42,5 +47,10 @@ const appModuleModules = [
     bootstrap:      [ cmp.AppComponent ]
 })
 export class AppModule { 
-    constructor(private routeExtSvc: svc.RouterExtService){}    
+    constructor(
+        private routeExtSvc: svc.RouterExtService,
+        private storeState: Store<AppStoreState>){
+
+        //storeState.pipe(select(getRouterState)).subscribe(state => console.log("RouterState", state));
+    }    
 }
