@@ -10,8 +10,8 @@ import { AppStoreModule } from './store/app-store.module';
 import { AppEffectsModule } from './store/app-effects.module';
 import { WarehouseModule } from './components/warehouse'
 import { AppStoreState } from './store';
-import { select, Store } from '@ngrx/store';
-import { getRouterState } from './store/router';
+import { Store } from '@ngrx/store';
+import { StoreDevtoolsModule } from "@ngrx/store-devtools";
 
 const appModuleComponents = [ 
     cmp.AppComponent, 
@@ -36,7 +36,8 @@ const appModuleModules = [
     AppStoreModule.forRoot(), 
     AppEffectsModule.forRoot(),
     AppStoreModule.forRouterRoot(),
-    WarehouseModule
+    WarehouseModule,
+    StoreDevtoolsModule.instrument({ maxAge: 25 })
 ];
 
 
